@@ -3,7 +3,7 @@ import { ReactComponent as LogoSVG } from "./../assets/svg/general/Logo.svg";
 import { ReactComponent as MetamaskSVG } from "./../assets/svg/general/metamask.svg";
 import { ReactComponent as FrameSVG } from "./../assets/svg/general/Frame.svg";
 import { Maybe } from "@metamask/providers/dist/utils";
-import PopUp from "./otherComponents/PopUp";
+import Portal from "./otherComponents/Portal";
 
 const Header = () => {
   const [account, setAccount] = useState("");
@@ -23,7 +23,7 @@ const Header = () => {
   const connectWallet = async () => {
     setLoading(true);
     if (typeof window.ethereum === "undefined") {
-      setPopUpText("Пожалуйста, установите расширение metamask в свой браузер");
+      setPopUpText("Please install the meta mask extension in your browser");
       setPopUpisOpen(true);
       setLoading(false);
     } else {
@@ -38,11 +38,11 @@ const Header = () => {
             setAccount(response[0]);
           });
           window.ethereum.on("chainChanged", () => {
-            setPopUpText("Сеть была изменена");
+            setPopUpText("Network has been changed");
             setPopUpisOpen(true);
           });
           window.ethereum.on("error", () => {
-            setPopUpText("Произошла ошибка подключения");
+            setPopUpText("Connection error occurred");
             setPopUpisOpen(true);
           });
         }
@@ -83,7 +83,19 @@ const Header = () => {
         </div>
       </div>
       {popUpisOpen && (
-        <PopUp popUpText={popUpText} setPopUpisOpen={setPopUpisOpen} />
+        <Portal>
+          <div className="popup popup__wrapper">
+            <div className="popup__container">
+              <h4>{popUpText}</h4>
+              <button
+                onClick={() => setPopUpisOpen(false)}
+                className="btn btn-reset"
+              >
+                Хорошо
+              </button>
+            </div>
+          </div>
+        </Portal>
       )}
     </div>
   );
